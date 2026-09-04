@@ -1,53 +1,11 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
-	import type { ActionData } from './$types';
+  import { enhance } from '$app/forms';
+  import type { ActionData } from './$types';
 
-	let { form }: { form: ActionData } = $props();
+  let { form }: { form: ActionData } = $props();
 
-	// Toggle between login and register views
-	let isLogin = $state(true);
-
-	import { invalidateAll } from '$app/navigation';
-	import ThemeToggle from '$lib/components/ThemeToggle.svelte';
-
-	let { data } = $props();
-
-	// UI State
-	let showModal = $state(false);
-	let selectedId = $state<string | null>(null);
-
-	// Derived state for the drawer
-	let selectedCandidate = $derived(data.candidates.find((c) => c.id === selectedId));
-
-	const stages = [
-		{ id: 'applied', label: 'Applied', color: 'bg-secondary' },
-		{ id: 'interview', label: 'Interview', color: 'bg-primary-container' },
-		{ id: 'test', label: 'Assessment', color: 'bg-surface-tint' },
-		{ id: 'offer', label: 'Offer Sent', color: 'bg-tertiary-container' },
-		{ id: 'accepted', label: 'Accepted', color: 'bg-tertiary' },
-		{ id: 'rejected', label: 'Archived', color: 'bg-error' }
-	];
-
-	function handleDragStart(e: DragEvent, id: string) {
-		e.dataTransfer?.setData('text/plain', id);
-	}
-
-	async function handleDrop(e: DragEvent, newStage: string) {
-		e.preventDefault();
-		const id = e.dataTransfer?.getData('text/plain');
-		if (!id) return;
-
-		// Optimistic UI update
-		const cand = data.candidates.find((c) => c.id === id);
-		if (cand) cand.stage = newStage;
-
-		// Background server update
-		const formData = new FormData();
-		formData.append('id', id);
-		formData.append('stage', newStage);
-		await fetch('?/updateStage', { method: 'POST', body: formData });
-		invalidateAll();
-	}
+  // Toggle between login and register views
+  let isLogin = $state(true);
 </script>
 
 <svelte:head>
