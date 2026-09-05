@@ -13,8 +13,9 @@ export const load: PageServerLoad = async (event) => {
     await db.insert(user).values({
       id: mockUserId,
       name: 'ProVA Reviewer',
-      email: 'admin@prova.com'
-    });
+      email: 'admin@prova.com',
+      emailVerified: false,
+    }).onConflictDoNothing();
   }
 
   const candidates = await db.query.candidate.findMany({
