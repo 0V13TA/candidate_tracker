@@ -1,17 +1,31 @@
+// import type { Handle } from '@sveltejs/kit';
+// import { building } from '$app/environment';
+// import { auth } from '$lib/server/auth';
+// import { svelteKitHandler } from 'better-auth/svelte-kit';
+//
+// const handleBetterAuth: Handle = async ({ event, resolve }) => {
+// 	const session = await auth.api.getSession({ headers: event.request.headers });
+//
+// 	if (session) {
+// 		event.locals.session = session.session;
+// 		event.locals.user = session.user;
+// 	}
+//
+// 	return svelteKitHandler({ event, resolve, auth, building });
+// };
+//
+// export const handle: Handle = handleBetterAuth;
+
 import type { Handle } from '@sveltejs/kit';
-import { building } from '$app/environment';
-import { auth } from '$lib/server/auth';
-import { svelteKitHandler } from 'better-auth/svelte-kit';
 
-const handleBetterAuth: Handle = async ({ event, resolve }) => {
-	const session = await auth.api.getSession({ headers: event.request.headers });
+export const handle: Handle = async ({ event, resolve }) => {
+  // Bypass Better Auth completely for the MVP
+  // @ts-ignore
+  event.locals.user = {
+    id: 'admin-123',
+    name: 'ProVA Reviewer',
+    email: 'admin@prova.com'
+  };
 
-	if (session) {
-		event.locals.session = session.session;
-		event.locals.user = session.user;
-	}
-
-	return svelteKitHandler({ event, resolve, auth, building });
+  return resolve(event);
 };
-
-export const handle: Handle = handleBetterAuth;
